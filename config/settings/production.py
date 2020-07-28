@@ -24,6 +24,9 @@ CACHES = {
     }
 }
 
+# COOKIE DOMAIN
+COOKIE_DOMAIN = env('COOKIE_DOMAIN', default='.app_name_here.com')
+
 # Security
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
@@ -36,8 +39,10 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool('DJANGO_SECURE_CONTENT_TYPE_NOSNIFF', def
 
 # Storages
 INSTALLED_APPS += ['storages']  # noqa F405
-AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
+# Not necessary if the role in aws has all s3 permissions, but no totally secure needs it and you can get it in IAM AWS
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+# AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = env('DJANGO_AWS_STORAGE_BUCKET_NAME')
 AWS_QUERYSTRING_AUTH = False
 _AWS_EXPIRY = 60 * 60 * 24 * 7

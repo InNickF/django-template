@@ -7,6 +7,18 @@ psycopg2==2.8.5 --no-binary psycopg2
 # Django
 django==3.0.7
 
+# Django REST Framework
+djangorestframework==3.11.0
+
+# Django filter
+django-filter==2.3.0
+
+# Django REST Framework Simple Json Web Token
+djangorestframework-simplejwt==4.4.0
+
+# pyJWT
+pyjwt==1.7.1
+
 # Environment
 django-environ==0.4.5
 

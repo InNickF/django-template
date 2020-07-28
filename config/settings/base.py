@@ -1,5 +1,6 @@
 """Base settings to build other settings files upon."""
 
+from datetime import timedelta
 import environ
 
 ROOT_DIR = environ.Path(__file__) - 3
@@ -30,6 +31,10 @@ ROOT_URLCONF = 'config.urls'
 # WSGI
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# Users & Authentication
+
+AUTH_USER_MODEL = 'users.user'
+
 # Apps
 DJANGO_APPS = [
     'django.contrib.auth',
@@ -41,10 +46,48 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 LOCAL_APPS = [
+    'app.users.apps.UsersAppConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+# Django REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'app.utils.authentication.HeaderAndCookieJWTAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 50,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
+
+APPEND_SLASH = False
+
+# Django Json web tokens library
+SIMPLE_JWT = {
+    'ROTATE_REFRESH_TOKENS': True,
+    'USER_ID_FIELD': 'email',
+    'USER_ID_CLAIM': 'user',
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),
+}
+# COOKIES SETTINGS (MUST BE IN SECONDS INT)
+cookies_max_age_time = 86400  # One day in seconds
+secure_cookies_directive = env('SECURE_COOKIES_DIRECTIVE', default=False)
+http_only_cookies_directive = env('SECURE_COOKIES_DIRECTIVE', default=True)
+
+COOKIES_SETTING = {
+    'access_max_age': cookies_max_age_time,
+    'refresh_max_age': cookies_max_age_time,
+    'secure': secure_cookies_directive,
+    'http_only': http_only_cookies_directive
+}
 
 # Passwords
 PASSWORD_HASHERS = [
@@ -78,6 +121,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app.middlewares.cookieJWTMiddleware.CookieJWTMiddleware'
 ]
 
 # Static files
@@ -132,7 +176,7 @@ X_FRAME_OPTIONS = 'DENY'
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 
 # Admin
-ADMIN_URL = 'admin/'
+ADMIN_URL = 'admin'
 ADMINS = [
     ("""Nick Fuenmayor""", 'in.nickf@gmail.com'),
 ]
