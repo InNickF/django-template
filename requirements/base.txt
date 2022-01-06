@@ -31,5 +31,5 @@ whitenoise==5.1.0
 # Celery
 redis==3.5.3
 django-redis==4.12.1
-celery==4.4.6
+celery==5.2.2
 flower==0.9.4
